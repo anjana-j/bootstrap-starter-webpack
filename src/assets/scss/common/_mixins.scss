@@ -1,0 +1,5 @@
+@mixin prototype($color:#f5f5f5) {
+    background : $color;
+    width:100%;
+    display: block;
+}
