@@ -1,0 +1,102 @@
+/* core */
+
+/* common */
+
+body {
+  /* background : grey;*/
+}
+
+h1 {
+  /* background : grey;*/
+}
+
+h2 {
+  /* background : grey;*/
+}
+
+h3 {
+  /* background : grey;*/
+}
+
+h4 {
+  /* background : grey;*/
+}
+
+p {
+  /* background : grey;*/
+}
+
+a {
+  /* background : grey;*/
+}
+
+/* section */
+
+header {
+  height: 100px;
+  background-color: #d5d5d5;
+}
+
+footer {
+  height: 350px;
+  background: #b5b5b5;
+}
+
+/* overrides */
+
+/* nav-bar */
+
+.navbar {
+  margin-bottom: 0;
+}
+
+main section {
+  min-height: 300px;
+}
+
+main #banner {
+  background-color: black;
+}
+
+main #news {
+  background-color: blue;
+}
+
+main #ar {
+  background-color: lightgreen;
+}
+
+main #ar h3 {
+  text-align: left;
+  color: Red;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 640px) {
+  main #ar h3 {
+    text-align: center;
+  }
+}
+
+@media only screen and (min-width: 641px) and (max-width: 1024px) {
+  main #ar h3 {
+    text-align: right;
+  }
+}
+
+main #whitepaper {
+  background-color: deepskyblue;
+}
+
+main #features {
+  background-color: slategrey;
+}
+
+main #services {
+  background-color: mediumpurple;
+}
+
+main #demos {
+  background-color: lightgrey;
+}
