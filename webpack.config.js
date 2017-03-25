@@ -19,6 +19,7 @@ module.exports = {
     entry: {
         app: './src/assets/js/app.js',
         about: './src/assets/js/about.js',
+        contact: './src/assets/js/contact.js',
         vendor: ['jquery', 'bootstrap-loader']
     },
     output: {
@@ -85,7 +86,7 @@ module.exports = {
 
 
             {
-                test: /\.(png|jpg|jpeg|gif)$/,
+                test: /\.(png|jpg|jpeg|gif|cur)$/,
                 use: "url-loader?limit=10000&outputPath=./assets/images/"
             }
 
@@ -128,9 +129,17 @@ module.exports = {
             template: './src/about.html'
         }),
 
+        new HtmlWebpackPlugin({ 
+            filename: 'contact.html',
+            title: 'Webpack Test E25 Contact',
+            hash: true,
+            chunks: ['vendor', 'contact'],
+            template: './src/contact.html'
+        }),
+
 
         new ExtractTextPlugin({
-            filename: './assets/css/[name].[hash].css',
+            filename: './assets/css/[name].css',
             disable: false,
             allChunks: true
         }),

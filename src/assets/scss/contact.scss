@@ -1,0 +1,52 @@
+@import 'common/core';
+//@import '~slider-pro/dist/css/slider-pro.css';
+
+
+main {
+    section {
+        min-height: 300px;
+    }
+    #banner {
+        background-color: black;
+    }
+    #news {
+        background-color: blue;
+    }
+    #ar {
+        background-color: lightgreen;
+
+
+        h3 {
+
+            text-align: left;
+            color : Red;
+            font-size : 24px;
+            font-weight : 700;
+
+            
+            @media only screen and (max-width: 640px) {
+                text-align: center;
+            }
+
+            @media only screen and (min-width:641px) and (max-width: 1024px) {
+                text-align: right;
+            }
+
+            
+        }
+        
+
+    }
+    #whitepaper {
+        background-color: deepskyblue;
+    }
+    #features {
+        background-color: slategrey;
+    }
+    #services {
+        background-color: mediumpurple;
+    }
+    #demos {
+        background-color: lightgrey;
+    }
+}
