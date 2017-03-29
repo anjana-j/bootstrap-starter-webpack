@@ -1,10 +1,11 @@
 import '../scss/app.scss';
-
-
 import 'owl.carousel';
+
 //import '../../../node_modules/owl.carousel/dist/assets/owl.carousel.css';
 //import '../../../node_modules/owl.carousel/dist/assets/owl.carousel.css';
 // import 'owlcss';
+//import '../scss/common/_fonts.scss';
+
 
 $(document).ready(function () {
 
