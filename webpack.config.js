@@ -2,45 +2,50 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const BitBarWebpackProgressPlugin = require('bitbar-webpack-progress-plugin'); //VSCode Only
-
-// const imagemin = require('imagemin');
-// const imageminGuetzli = require('imagemin-guetzli');
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 const PATHS = {
-    //react: path.join(__dirname, 'node_modules/react/dist/react.min.js'),
-    src: path.join(__dirname, 'src'),
-    dist: path.join(__dirname, 'dist')
+    src: path.resolve(__dirname, 'src'),
+    dist: path.resolve(__dirname, 'dist')
 };
 
+const config = {
 
-module.exports = {
-    //context : path.resolve(__dirname, './src'),
+    devtool: "eval-source-map",
+    
     entry: {
-        app: './src/assets/js/app.js',
-        about: './src/assets/js/about.js',
-        vendor: ['jquery', 'bootstrap-loader']
+        vendor      : ['jquery','bootstrap-loader','./src/assets/js/vendor.js'],
+        app         : './src/assets/js/app.js'
     },
+
     output: {
         path: PATHS.dist,
         filename: './assets/js/[name].min.js'
     },
-    //devtool : 'source-map',
+
     resolve: {
         modules: ['node_modules'],
+        extensions: [".js", ".json", ".jsx", ".css"],
         alias: {
+            'images' : path.resolve(__dirname, 'src/assets/images'),
+            'plugins': path.resolve(__dirname, 'src/plugins'),
             jquery: 'jquery/src/jquery',
-            owlcss: 'owl.carousel/dist/assets/owl.carousel.css'
-        }
+            
+        },
     },
+
     module: {
         rules: [
 
+            /* styles loader */
             {
                 test: /\.(scss|css)$/,
                 use: ExtractTextPlugin.extract({
                     use: [{
-                            loader: "css-loader"
+                            loader: "css-loader",
+                            options : {
+                                sourceMap: true
+                            }
                         },
 
                         {
@@ -61,62 +66,87 @@ module.exports = {
                         },
 
                         {
-                            loader: "sass-loader"
+                            loader: "sass-loader",
+                            options : {
+                                sourceMap: true,
+                                includePaths : ["./node_modules/foundation-sites/scss"]
+                            }
                         }
 
                         
                     ],
-                    fallback: "style-loader"
+                    fallback: "style-loader",
+                    publicPath: '../../'
                 })
             },
 
 
-            {
-                test: /bootstrap-sass\/assets\/javascripts\//,
-                use: 'imports-loader?jQuery=jquery'
-            },
-
-
-            // {
-            //     test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)/,
-            //     use: 'url-loader?limit=10000&name=./assets/fonts/[name].[ext]'
-            // },
-
-
+            /* fonts loader */
             {
                 test: /\.svg$/,
                 exclude: [path.resolve(__dirname, "./src/assets/images")],
-                use: 'url-loader?limit=10000&mimetype=image/svg+xml&name=[name].[ext]&publicPath=../fonts/&outputPath=./assets/fonts/'
+                use: 'url-loader?limit=10000&mimetype=image/svg+xml&name=[name].[ext]&outputPath=./assets/fonts/&publicPath=../fonts/'
             },
-            { test: /\.ttf$/, use: 'url-loader?limit=10000&mimetype=application/x-font-ttf&name=[name].[ext]&publicPath=../fonts/&outputPath=./assets/fonts/' },
-            { test: /\.otf$/, use: 'url-loader?limit=10000&mimetype=application/x-font-opentype&name=[name].[ext]&publicPath=../fonts/&outputPath=./assets/fonts/' },
-            { test: /\.woff$/, use: 'url-loader?limit=10000&mimetype=application/font-woff&name=[name].[ext]&publicPath=../fonts/&outputPath=./assets/fonts/' },
-            { test: /\.woff2$/, use: 'url-loader?limit=10000&mimetype=application/font-woff2&name=[name].[ext]&publicPath=../fonts/&outputPath=./assets/fonts/' },
-            { test: /\.eot$/, use: 'url-loader?limit=10000&mimetype=application/vnd.ms-fontobject&name=[name].[ext]&publicPath=../fonts/&outputPath=./assets/fonts/' },
-            { test: /\.sfnt$/, use: 'url-loader?limit=10000&mimetype=application/font-sfnt&name=[name].[ext]&publicPath=../fonts/&outputPath=./assets/fonts/' },
+            {
+                test: /\.ttf$/,
+                use: 'url-loader?limit=10000&mimetype=application/x-font-ttf&name=[name].[ext]&outputPath=./assets/fonts/&publicPath=../fonts/'
+            }, 
+            {
+                test: /\.otf$/,
+                use: 'url-loader?limit=10000&mimetype=application/x-font-opentype&name=[name].[ext]&outputPath=./assets/fonts/&publicPath=../fonts/'
+            }, 
+            {
+                test: /\.woff$/,
+                use: 'url-loader?limit=10000&mimetype=application/font-woff&name=[name].[ext]&outputPath=./assets/fonts/&publicPath=../fonts/'
+            }, 
+            {
+                test: /\.woff2$/,
+                use: 'url-loader?limit=10000&mimetype=application/font-woff2&name=[name].[ext]&outputPath=./assets/fonts/&publicPath=../fonts/'
+            }, 
+            {
+                test: /\.eot$/,
+                use: 'url-loader?limit=10000&mimetype=application/vnd.ms-fontobject&name=[name].[ext]&outputPath=./assets/fonts/&publicPath=../fonts/'
+            }, 
+            {
+                test: /\.sfnt$/,
+                use: 'url-loader?limit=10000&mimetype=application/font-sfnt&name=[name].[ext]&outputPath=./assets/fonts/&publicPath=../fonts/'
+            },
 
-
+            /* img loader */
             {
                 test: /\.(png|jpg|jpeg|gif|svg)$/,
                 exclude: [
                     path.resolve(__dirname, "./src/assets/fonts")
                 ],
                 use: "file-loader?name=./assets/images/[name].[ext]"
+            },
+
+            /* js loader */
+            {
+                test: /\.js$/,
+                exclude: ["node_modules"],
+                use: ['imports-loader']
+            },
+
+            /* jqeuery loader */
+            {
+                test: require.resolve('jquery'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'jQuery'
+                },{
+                    loader: 'expose-loader',
+                    options: '$'
+                }]
             }
+
 
         ]
     },
-    devServer: {
-        contentBase: PATHS.dist,
-        compress: true,
-        port: 8080,
-        stats: 'errors-only',
-        overlay: {
-            warnings: true,
-            errors: true
-        }
-    },
+
     plugins: [
+
+        //new webpack.optimize.UglifyJsPlugin(),
 
         new webpack.ProvidePlugin({
             $: 'jquery',
@@ -124,40 +154,28 @@ module.exports = {
             'window.jQuery': 'jquery'
         }),
 
+        // PUG TEMPLATES
+
         new HtmlWebpackPlugin({
-            title: 'Webpack Test E25',
-            // minify : {
-            //     collapseWhitespace : true
-            // },
-            hash: true,
+            title: 'Home',
             chunks: ['vendor', 'app'],
             template: './src/index.html'
         }),
-
-        new HtmlWebpackPlugin({ 
-            filename: 'about.html',
-            title: 'Webpack Test E25 Contact',
-            hash: true,
-            chunks: ['vendor', 'about'],
-            template: './src/about.html'
-        }),
         
-
-
         new ExtractTextPlugin({
             filename: './assets/css/[name].min.css',
             disable: false,
             allChunks: true
         }),
 
-        // new imagemin(['images/*.{png,jpg}'], 'build/images', {
-        //     use: [
-        //         imageminGuetzli({quality: 95})
-        //     ]
-        // }).then(() => {
-        //     console.log('Images optimized');
-        // }),
+        new BrowserSyncPlugin({
+            host: 'localhost',
+            port: 3000,
+            proxy: 'http://localhost:8080/'
+        }, { reload: false })
 
-        new BitBarWebpackProgressPlugin()
     ]
-}
+};
+
+
+module.exports = config;
